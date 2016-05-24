@@ -15,6 +15,7 @@ Serial myPort;
 final int serialPortIdx = 0;
 final  String dataFolderPath = "";
 final  String videoFolderPath = dataFolderPath + "/video/";
+PImage image333;
 
 ArrayList<Scenario> scenarios;
 UserCommand userCommand;
@@ -87,6 +88,8 @@ void setup() {
 
   // Start scenarios
   restartScenarios();
+  
+  image333 = loadImage(dataFolderPath + "startView.png");
 }
 
 void initializeScenarios() {
@@ -105,17 +108,17 @@ void initializeScenarios() {
 }
 
 void initNextScenario() {
-  scenarios.get(scenarioIdx).stop();
+  scenarios.get(scenarioIdx).stop2();
   scenarioIdx = (scenarioIdx + 1) % scenarios.size();
   sceneAnswers.set(scenarioIdx, QuestionStatus.UNKNOWN); // initialize selection
 
   println("Setting up scenario idx: " + scenarioIdx);
   Scenario nextScene = scenarios.get(scenarioIdx);
   if (nextScene instanceof VideoScenario) {
-    ((VideoScenario) nextScene).setup(scenes[scenarioIdx].safetyAtStart, scenes[scenarioIdx].fuelEfficiencyAtStart);
+    ((VideoScenario) nextScene).setup2(scenes[scenarioIdx].safetyAtStart, scenes[scenarioIdx].fuelEfficiencyAtStart);
   }
   println("Scene Starting: " + scenarioIdx);
-  nextScene.start();
+  nextScene.start2();
 
   scenarioTimer = millis();
   modeChangeDenied = 0;
@@ -128,7 +131,7 @@ void initNextScenario() {
 }
 
 void restartScenarios() {
-  scenarios.get(scenarioIdx).stop();
+  scenarios.get(scenarioIdx).stop2();
   scenarioIdx = scenarios.size() - 1;
   println("(re)starting scenarios");
   initNextScenario();
@@ -164,7 +167,7 @@ void updateBarSizes() {
 }
 
 void draw() {
-  boolean running = scenarios.get(scenarioIdx).draw();
+  boolean running = scenarios.get(scenarioIdx).draw2();
 
   // Move forward on scenarios
   if (!running) {
@@ -183,12 +186,14 @@ void draw() {
     } else if (scenarioTimer + scenes[scenarioIdx].questionAfterTime < millis()) {
       dashboard.startModeActivation(scenes[scenarioIdx].nextWeatherMode, scenes[scenarioIdx].questionReactTime);
     }
+  } else {
+   // image(image333, 0, 0, 500, 570);
   }
 
   // the last scene
   if (scenarioIdx == scenes.length - 1) {
     // draw new background
-    scenarios.get(scenarioIdx).draw();
+    scenarios.get(scenarioIdx).draw2();
 
     // Set text on top of bubbles
     textSize(46);

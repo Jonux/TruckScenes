@@ -47,7 +47,7 @@ public class VideoScenario implements Scenario {
       safetyBarSet.setBar12Progress(safetyProgress, fuelEffProgress, 0);
     }
 
-    public void start() {
+    public void start2() {
       if (videoClip == null) {
         System.err.println(this.videoClip + " NULL");
         return;
@@ -68,12 +68,12 @@ public class VideoScenario implements Scenario {
         startTime = applet.millis();
     }
     
-    public void stop(){
+    public void stop2(){
       videoClip.stop();
     }
     
 
-    public void setup(float safetyProgress, float fuelEffProgress) {
+    public void setup2(float safetyProgress, float fuelEffProgress) {
         if (videoClip == null) {
           System.out.println("videoClipName: " + dataPath("") + videoClipName);
           videoClip = new Movie(applet, dataPath("") + videoClipName);
@@ -96,7 +96,7 @@ public class VideoScenario implements Scenario {
         
     }
     
-    public boolean draw() {
+    public boolean draw2() {
         if (videoClip != null && videoClip.available()) {
             videoClip.read();
         }
@@ -106,7 +106,7 @@ public class VideoScenario implements Scenario {
         applet.image(barSetBackground, 0, 0);
 
         
-        this.safetyBarSet.draw(applet.width/2 - safetyBarSet.getWidth()/2, verticalMargin);
+        this.safetyBarSet.draw2(applet.width/2 - safetyBarSet.getWidth()/2, verticalMargin);
 
         if (videoClip.time() >= videoEndPos) {
           return false;

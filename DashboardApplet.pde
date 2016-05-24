@@ -50,7 +50,7 @@ class DashboardApplet extends PApplet {
   }
 
   public void setup() {
-    frameRate(30);
+    frameRate(20);
     surface.setResizable(true);
     println(dataPath(""));
 
@@ -121,7 +121,11 @@ class DashboardApplet extends PApplet {
       }
     }
 
-    redraw();
+  fill(255);
+  textSize(16);
+  text("FPS: " + (int)frameRate, 10, 50);
+  
+   // redraw();
   }
 
   /*

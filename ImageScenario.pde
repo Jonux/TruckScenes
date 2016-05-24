@@ -8,8 +8,8 @@ import processing.core.*;
  */
 public class ImageScenario implements Scenario {
 
-  private PApplet applet;
-  private PImage image;
+  private final PApplet applet;
+  private final PImage image;
 
   private int scenarioTime = 3500;  // ms
   private int startTime;
@@ -22,17 +22,17 @@ public class ImageScenario implements Scenario {
     this.startTime = applet.millis();
   }
 
-  public void start() {
+  public void start2() {
     this.startTime = applet.millis();
   }
 
-  public void stop() {
+  public void stop2() {
   }
 
   // Returns true until scene timer is over
-  public boolean draw() {
+  public boolean draw2() {
     if (image != null) {
-      applet.image(image, 0, 0, applet.width, applet.height);
+      //applet.image(image, 0, 0, applet.width, applet.height);
     }
 
     if (scenarioTime > 0 && startTime + scenarioTime < applet.millis()) {

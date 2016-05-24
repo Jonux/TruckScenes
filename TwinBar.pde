@@ -62,7 +62,7 @@ public class TwinBar {
     }
   }
   
-  public void draw(int x, int y){
+  public void draw2(int x, int y){
     pg.beginDraw();
     pg.background(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue());
     pg.fill(roundedBoxColor.getRed(), roundedBoxColor.getGreen(), roundedBoxColor.getBlue());
