@@ -77,7 +77,7 @@ public class VideoScenario implements Scenario {
         if (videoClip == null) {
           System.out.println("videoClipName: " + dataPath("") + videoClipName);
           videoClip = new Movie(applet, dataPath("") + videoClipName);
-          videoClip.frameRate(30);
+         // videoClip.frameRate(30);
         }
         
         if (videoClip != null) {

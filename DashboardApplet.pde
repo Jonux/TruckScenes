@@ -45,12 +45,12 @@ class DashboardApplet extends PApplet {
   }
 
   public void settings() {
-    size(screenSizeX, screenSizeY);
-    fullScreen(2);
+    size(screenSizeX, screenSizeY, P2D);
+   // fullScreen(2);
   }
 
   public void setup() {
-    frameRate(20);
+    frameRate(60);
     surface.setResizable(true);
     println(dataPath(""));
 

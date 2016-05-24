@@ -32,7 +32,7 @@ public class ImageScenario implements Scenario {
   // Returns true until scene timer is over
   public boolean draw2() {
     if (image != null) {
-      //applet.image(image, 0, 0, applet.width, applet.height);
+      applet.image(image, 0, 0, applet.width, applet.height);
     }
 
     if (scenarioTime > 0 && startTime + scenarioTime < applet.millis()) {

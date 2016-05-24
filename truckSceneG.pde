@@ -50,14 +50,14 @@ enum QuestionStatus {
 }
 
 void settings() {
-  size(1920, 1024);
+  size(1920, 1024, P2D);
   fullScreen(1);
   println(dataPath(""));
 }
 
 void setup() {
   // Main display
-  frameRate(30);
+  //frameRate(30);
 
   scenarioIdx = 0;
   scenarios = new ArrayList<Scenario>();
@@ -212,6 +212,8 @@ void draw() {
   fill(255);
   textSize(16);
   text("FPS: " + (int)frameRate, 10, 20);
+  
+  redraw();
 }
 
 void transitionBetweenScenarios() {
