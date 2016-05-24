@@ -74,12 +74,12 @@ public class VideoScenario implements Scenario {
     
 
     public void setup(float safetyProgress, float fuelEffProgress) {
-      
-        System.out.println("videoClipName: " + dataPath("") + videoClipName);
+        if (videoClip == null) {
+          System.out.println("videoClipName: " + dataPath("") + videoClipName);
+          videoClip = new Movie(applet, dataPath("") + videoClipName);
+          videoClip.frameRate(30);
+        }
         
-        videoClip = new Movie(applet, dataPath("") + videoClipName);
-        videoClip.frameRate(30);
-
         if (videoClip != null) {
           videoClip.speed(1);
           videoClip.play();

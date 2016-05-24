@@ -75,6 +75,7 @@ void setup() {
   } 
   catch (Exception e) {
     System.out.println("Error opening serial port: Port busy");
+    exit();
   }
 
   // Setup dashboard display
@@ -192,7 +193,7 @@ void draw() {
     // Set text on top of bubbles
     textSize(46);
     textAlign(CENTER);
-    fill(255);
+    fill(0);
     text(String.format("%c%.1f%%", (safetyOverallChange >= 0) ? '+' : '-', safetyOverallChange), 1170, 640);
     text(String.format("%c%.1f%%", (fuelOverallChange >= 0) ? '+' : '-', fuelOverallChange * 10), 760, 640);
   }
@@ -202,6 +203,10 @@ void draw() {
 
   // Handle fading events
   transitionBetweenScenarios();
+  
+  fill(255);
+  textSize(16);
+  text("FPS: " + (int)frameRate, 10, 20);
 }
 
 void transitionBetweenScenarios() {
