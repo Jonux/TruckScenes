@@ -34,9 +34,9 @@ int modeChangeDenied = 0;
 final SceneData[] scenes = {
   new SceneData(WeatherMode.UNKNOWN, dataFolderPath + "startView.png"), 
   new SceneData(0.67f, -0.5f, 0.33f, -0.05f, WeatherMode.ECO, WeatherMode.SLIPPERY, 0.0f, 15.0f, 2000, 5000, 3000, videoFolderPath + "scene1.mp4"), 
- // new SceneData(0.0f, 0.8f, 0.7f, 0.8f, WeatherMode.SLIPPERY, WeatherMode.ECO, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene2.mp4"), 
- // new SceneData(0.6f, -0.3f, 0.4f, -0.08f, WeatherMode.ECO, WeatherMode.UPHILL, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene3.mp4"), 
- // new SceneData(0.75f, -0.47f, 0.41f, -0.02f, WeatherMode.ECO, WeatherMode.WET, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene4.mp4"), 
+  new SceneData(0.0f, 0.8f, 0.7f, 0.8f, WeatherMode.SLIPPERY, WeatherMode.ECO, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene2.mp4"), 
+  new SceneData(0.6f, -0.3f, 0.4f, -0.08f, WeatherMode.ECO, WeatherMode.UPHILL, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene3.mp4"), 
+  new SceneData(0.75f, -0.47f, 0.41f, -0.02f, WeatherMode.ECO, WeatherMode.WET, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene4.mp4"), 
   new SceneData(WeatherMode.UNKNOWN, dataFolderPath + "summaryView.png")
 };
 
@@ -44,29 +44,26 @@ final SceneData[] scenes = {
 double safetyOverallChange = 0;
 double fuelOverallChange = 0;
 ArrayList<QuestionStatus> sceneAnswers;
-PImage starImageFilled;
-PImage starImageHollow;
+PShape starShapeFilled;
+PShape starShapeHollow;
 
 enum QuestionStatus {
   UNKNOWN, APPROVED, DENIED
 }
 
 void settings() {
-  size(1620, 1080, P2D);
+  size(1680, 1050, P2D);
   //fullScreen(1);
   println(dataPath(""));
 }
 
 void setup() {
   // Main display
-  frameRate(30);
+  frameRate(25);
 
   scenarioIdx = 0;
   scenarios = new ArrayList<Scenario>();
   sceneAnswers = new ArrayList<QuestionStatus>();
-
-  starImageFilled = loadImage(dataPath("") + "/filledStar.png"); //"/Filled star.svg");
-  starImageHollow = loadImage(dataPath("") + "/hollowStar.png"); //"/Unfilled star.svg");
   
   // Setup scenarios
   initializeScenarios();
@@ -89,10 +86,15 @@ void setup() {
   PApplet.runSketch(new String[] { dashboard.getClass().getName() }, dashboard);
 
   // Magic delay, wait to other thread to get ready. TODO: do this properly
-  delay(300);
+  // delay(300);
 
   // Start scenarios
   restartScenarios();
+ 
+  starShapeFilled = loadShape(dataPath("") + "/Filled star.svg");
+  starShapeHollow = loadShape(dataPath("") + "/Unfilled star.svg");
+  starShapeHollow.setFill(color(255, 209, 6));
+  starShapeFilled.setFill(color(255, 209, 6));
 }
 
 void initializeScenarios() {
@@ -197,22 +199,28 @@ void draw() {
     scenarios.get(scenarioIdx).draw();
 
     // calculate scores
-    int scoreSafety = 5; //CalculateSafetyScore();
-    int scoreFuel = 0;//CalculateFEScore();
+    int scoreSafety = CalculateSafetyScore();
+    int scoreFuel = CalculateFEScore();
 
     // Draw star scores
     int starSize = 70;
     fill(255,255,255);
+    noStroke();
     rect(770, 425, starSize*6, starSize*4);
-    //starImageHollow.setFill(color(255, 209, 6));
-    //starImageFilled.setFill(color(255, 209, 6));
     // R: 255 G: 209 B: 6
     //255, 204, 0
     for (int i=0; i < 4; i++) {
-      PImage currentSafety = (i < scoreSafety) ? starImageFilled : starImageHollow;
-      PImage currentFuel = (i < scoreFuel) ? starImageFilled : starImageHollow;
-      image(currentSafety, 770+i*80, 425, starSize, starSize);
-      image(currentFuel, 770+i*80, 560, starSize, starSize);
+      if (i < scoreSafety) {
+        shape(starShapeFilled, 770+i*80, 425, starSize, starSize);
+      } else { 
+        shape(starShapeHollow, 770+i*80, 425, starSize, starSize);
+      }
+      
+      if (i < scoreFuel) {
+        shape(starShapeFilled, 770+i*80, 540, starSize, starSize);
+      } else { 
+        shape(starShapeHollow, 770+i*80, 540, starSize, starSize);
+      }
     }
    /*
     // Set text on top of bubbles
@@ -232,11 +240,11 @@ void draw() {
   
   fill(255);
   textSize(16);
- // text("FPS: " + (int)frameRate, 10, 20);
+  text("FPS: " + (int)frameRate, 20, 30);
 }
 
 int CalculateSafetyScore() {
- int scoreSafety = 5;
+ int scoreSafety = 4;
  for (int i=0; i<sceneAnswers.size(); i++) {
    QuestionStatus q = sceneAnswers.get(i);
    if (q == QuestionStatus.DENIED && i != 1) {
@@ -247,7 +255,7 @@ int CalculateSafetyScore() {
 }
 
 int CalculateFEScore() {
- int scoreFE = 5;
+ int scoreFE = 4;
  QuestionStatus q = (1 < sceneAnswers.size()) ? sceneAnswers.get(1) : QuestionStatus.UNKNOWN;
  if (q == QuestionStatus.DENIED) {
    scoreFE--;

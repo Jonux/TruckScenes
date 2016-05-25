@@ -50,7 +50,7 @@ class DashboardApplet extends PApplet {
   }
 
   public void setup() {
-    frameRate(30);
+    frameRate(20);
     surface.setResizable(true);
     println(dataPath(""));
 
