@@ -34,9 +34,9 @@ int modeChangeDenied = 0;
 final SceneData[] scenes = {
   new SceneData(WeatherMode.UNKNOWN, dataFolderPath + "startView.png"), 
   new SceneData(0.67f, -0.5f, 0.33f, -0.05f, WeatherMode.ECO, WeatherMode.SLIPPERY, 0.0f, 15.0f, 2000, 5000, 3000, videoFolderPath + "scene1.mp4"), 
-  new SceneData(0.0f, 0.8f, 0.7f, 0.8f, WeatherMode.SLIPPERY, WeatherMode.ECO, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene2.mp4"), 
-  new SceneData(0.6f, -0.3f, 0.4f, -0.08f, WeatherMode.ECO, WeatherMode.UPHILL, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene3.mp4"), 
-  new SceneData(0.75f, -0.47f, 0.41f, -0.02f, WeatherMode.ECO, WeatherMode.WET, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene4.mp4"), 
+ // new SceneData(0.0f, 0.8f, 0.7f, 0.8f, WeatherMode.SLIPPERY, WeatherMode.ECO, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene2.mp4"), 
+ // new SceneData(0.6f, -0.3f, 0.4f, -0.08f, WeatherMode.ECO, WeatherMode.UPHILL, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene3.mp4"), 
+ // new SceneData(0.75f, -0.47f, 0.41f, -0.02f, WeatherMode.ECO, WeatherMode.WET, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene4.mp4"), 
   new SceneData(WeatherMode.UNKNOWN, dataFolderPath + "summaryView.png")
 };
 
@@ -44,13 +44,16 @@ final SceneData[] scenes = {
 double safetyOverallChange = 0;
 double fuelOverallChange = 0;
 ArrayList<QuestionStatus> sceneAnswers;
+PImage starImageFilled;
+PImage starImageHollow;
+
 enum QuestionStatus {
   UNKNOWN, APPROVED, DENIED
 }
 
 void settings() {
-  size(1920, 1024);
-  fullScreen(1);
+  size(1620, 1080, P2D);
+  //fullScreen(1);
   println(dataPath(""));
 }
 
@@ -62,6 +65,9 @@ void setup() {
   scenarios = new ArrayList<Scenario>();
   sceneAnswers = new ArrayList<QuestionStatus>();
 
+  starImageFilled = loadImage(dataPath("") + "/filledStar.png"); //"/Filled star.svg");
+  starImageHollow = loadImage(dataPath("") + "/hollowStar.png"); //"/Unfilled star.svg");
+  
   // Setup scenarios
   initializeScenarios();
 
@@ -190,12 +196,32 @@ void draw() {
     // draw new background
     scenarios.get(scenarioIdx).draw();
 
+    // calculate scores
+    int scoreSafety = 5; //CalculateSafetyScore();
+    int scoreFuel = 0;//CalculateFEScore();
+
+    // Draw star scores
+    int starSize = 70;
+    fill(255,255,255);
+    rect(770, 425, starSize*6, starSize*4);
+    //starImageHollow.setFill(color(255, 209, 6));
+    //starImageFilled.setFill(color(255, 209, 6));
+    // R: 255 G: 209 B: 6
+    //255, 204, 0
+    for (int i=0; i < 4; i++) {
+      PImage currentSafety = (i < scoreSafety) ? starImageFilled : starImageHollow;
+      PImage currentFuel = (i < scoreFuel) ? starImageFilled : starImageHollow;
+      image(currentSafety, 770+i*80, 425, starSize, starSize);
+      image(currentFuel, 770+i*80, 560, starSize, starSize);
+    }
+   /*
     // Set text on top of bubbles
     textSize(46);
     textAlign(CENTER);
     fill(0);
     text(String.format("%c%.1f%%", (safetyOverallChange >= 0) ? '+' : '-', safetyOverallChange), 1170, 640);
     text(String.format("%c%.1f%%", (fuelOverallChange >= 0) ? '+' : '-', fuelOverallChange * 10), 760, 640);
+    */
   }
 
   // Handle user inputs and update bar sizes
@@ -206,7 +232,27 @@ void draw() {
   
   fill(255);
   textSize(16);
-  text("FPS: " + (int)frameRate, 10, 20);
+ // text("FPS: " + (int)frameRate, 10, 20);
+}
+
+int CalculateSafetyScore() {
+ int scoreSafety = 5;
+ for (int i=0; i<sceneAnswers.size(); i++) {
+   QuestionStatus q = sceneAnswers.get(i);
+   if (q == QuestionStatus.DENIED && i != 1) {
+     scoreSafety--;
+   }
+ }
+ return scoreSafety;
+}
+
+int CalculateFEScore() {
+ int scoreFE = 5;
+ QuestionStatus q = (1 < sceneAnswers.size()) ? sceneAnswers.get(1) : QuestionStatus.UNKNOWN;
+ if (q == QuestionStatus.DENIED) {
+   scoreFE--;
+ }
+ return scoreFE;
 }
 
 void transitionBetweenScenarios() {

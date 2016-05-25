@@ -45,7 +45,7 @@ class DashboardApplet extends PApplet {
   }
 
   public void settings() {
-    size(screenSizeX, screenSizeY);
+    size(screenSizeX, screenSizeY, P2D);
     fullScreen(2);
   }
 
@@ -121,7 +121,7 @@ class DashboardApplet extends PApplet {
       }
     }
 
-    redraw();
+    //redraw();
   }
 
   /*
