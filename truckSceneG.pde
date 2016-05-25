@@ -248,8 +248,8 @@ int CalculateSafetyScore() {
  for (int i=0; i<sceneAnswers.size(); i++) {
    QuestionStatus q = sceneAnswers.get(i);
    if (q == QuestionStatus.DENIED) {
-     if (i == 1) {
-       scoreSafety--;
+     if (i == 2) {
+       //scoreSafety--;
      } else {
        scoreSafety = scoreSafety - 2;
      }
@@ -261,7 +261,7 @@ int CalculateSafetyScore() {
 
 int CalculateFEScore() {
  int scoreFE = 4;
- QuestionStatus q = (1 < sceneAnswers.size()) ? sceneAnswers.get(1) : QuestionStatus.UNKNOWN;
+ QuestionStatus q = (2 < sceneAnswers.size()) ? sceneAnswers.get(2) : QuestionStatus.UNKNOWN;
  if (q == QuestionStatus.DENIED) {
    scoreFE--;
  }
