@@ -93,8 +93,8 @@ void setup() {
  
   starShapeFilled = loadShape(dataPath("") + "/Filled star.svg");
   starShapeHollow = loadShape(dataPath("") + "/Unfilled star.svg");
-  starShapeHollow.setFill(color(255, 209, 6));
-  starShapeFilled.setFill(color(255, 209, 6));
+  starShapeHollow.setFill(color(0, 176, 240)); // color(255, 209, 6)); yellow
+  starShapeFilled.setFill(color(0, 176, 240));
 }
 
 void initializeScenarios() {
@@ -210,13 +210,13 @@ void draw() {
     // R: 255 G: 209 B: 6
     //255, 204, 0
     for (int i=0; i < 4; i++) {
-      if (i < scoreSafety) {
+      if (i < scoreFuel) {
         shape(starShapeFilled, 770+i*80, 425, starSize, starSize);
       } else { 
         shape(starShapeHollow, 770+i*80, 425, starSize, starSize);
       }
       
-      if (i < scoreFuel) {
+      if (i < scoreSafety) {
         shape(starShapeFilled, 770+i*80, 540, starSize, starSize);
       } else { 
         shape(starShapeHollow, 770+i*80, 540, starSize, starSize);
@@ -247,11 +247,16 @@ int CalculateSafetyScore() {
  int scoreSafety = 4;
  for (int i=0; i<sceneAnswers.size(); i++) {
    QuestionStatus q = sceneAnswers.get(i);
-   if (q == QuestionStatus.DENIED && i != 1) {
-     scoreSafety--;
+   if (q == QuestionStatus.DENIED) {
+     if (i == 1) {
+       scoreSafety--;
+     } else {
+       scoreSafety = scoreSafety - 2;
+     }
+     
    }
  }
- return scoreSafety;
+ return max(scoreSafety,0);
 }
 
 int CalculateFEScore() {
@@ -260,7 +265,7 @@ int CalculateFEScore() {
  if (q == QuestionStatus.DENIED) {
    scoreFE--;
  }
- return scoreFE;
+ return max(scoreFE, 0);
 }
 
 void transitionBetweenScenarios() {
