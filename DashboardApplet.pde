@@ -50,8 +50,8 @@ class DashboardApplet extends PApplet {
   }
 
   public void setup() {
-    frameRate(60);
-    surface.setResizable(true);
+    frameRate(25);
+    //surface.setResizable(true);
     println(dataPath(""));
 
     // Load weather icons
@@ -74,7 +74,7 @@ class DashboardApplet extends PApplet {
       }
     }
 
-    this.textFont = createFont("Arial Bold", 36);
+    this.textFont = createFont("Arial Bold", 32);
     textFont(textFont);
     modeActivationStarted = false;
   }
@@ -96,7 +96,7 @@ class DashboardApplet extends PApplet {
     int startxpos = 120; 
     int endxpos = width-startxpos;
     int between = width-2*startxpos;
-    println("startxpos " + (width-2*startxpos));
+    // println("startxpos " + (width-2*startxpos));
     
     int imgsize = 80;
     int padding = 15;
@@ -104,12 +104,20 @@ class DashboardApplet extends PApplet {
     
     int progBarH = 32;
     
+   
     rect(startxpos, 10, 5,480);
     rect(endxpos, 10, 5,480);
     // Mode is changing
     if (isWeatherModeChanging()) {
       if (modeActivationTimer + timeToNextMode > millis()) {
+        
+        //println( "Len: " + activatingMsg[nextWeatherMode.value].length() + " " + activatingMsg[nextWeatherMode.value]);
+        
         textSize(30);
+        if (activatingMsg[nextWeatherMode.value].length() > 22) {
+          textSize(24);
+        } 
+        
         textAlign(CENTER);
         fill(255, 255, 255);
 
@@ -128,10 +136,11 @@ class DashboardApplet extends PApplet {
 
     rect(0, this.height - imgsize - padding*2 - barh, (int)(this.width), barh);
     for (int i=0; i < weatherFiles.length-1; i++) {
+      int extraH = (i==2) ? (int)(imgsize*0.6) : 0;
       if (weatherMode.value == i && weatherMode != WeatherMode.UNKNOWN) {
-        shape(images.get(i), startxpos + 20 + (imgsize+padding)*i, this.height - imgsize - padding, imgsize, imgsize);
+        shape(images.get(i), startxpos + 20 + (imgsize+padding)*i, this.height - imgsize - padding - extraH, imgsize, imgsize);
       } else {
-        shape(inactiveImages.get(i), startxpos + 20 + (imgsize+padding)*i, this.height - imgsize - padding, imgsize, imgsize);
+        shape(inactiveImages.get(i), startxpos + 20 + (imgsize+padding)*i, this.height - imgsize - padding - extraH, imgsize, imgsize);
       }
     }
 

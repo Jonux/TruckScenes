@@ -101,9 +101,9 @@ public class VideoScenario implements Scenario {
             videoClip.read();
         }
         
-        applet.background(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue());
+        //applet.background(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue());
         applet.image(videoClip, (applet.width - videoClip.width)/2, barSetBackground.height); //, applet.width, applet.height - barSetBackground.height);
-        applet.image(barSetBackground, 0, 0);
+        //applet.image(barSetBackground, 0, 0);
 
         
         this.safetyBarSet.draw(applet.width/2 - safetyBarSet.getWidth()/2, verticalMargin);
