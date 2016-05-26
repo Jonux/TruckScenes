@@ -1,6 +1,5 @@
 import processing.serial.*;
 import processing.video.*;
-import processing.sound.*;
 
 import processing.core.PApplet;
 import processing.serial.Serial;
@@ -48,9 +47,6 @@ double fuelOverallChange = 0;
 ArrayList<QuestionStatus> sceneAnswers;
 PShape starShapeFilled;
 PShape starShapeHollow;
-
-SoundFile soundFile;
-
 
 enum QuestionStatus {
   UNKNOWN, APPROVED, DENIED
@@ -100,9 +96,6 @@ void setup() {
   starShapeHollow = loadShape(dataPath("") + "/Unfilled star.svg");
   starShapeHollow.setFill(color(0, 176, 240)); // color(255, 209, 6)); yellow
   starShapeFilled.setFill(color(0, 176, 240));
-  
-  
-  soundFile = new SoundFile(this, dataFolderPath + "");
 }
 
 void initializeScenarios() {

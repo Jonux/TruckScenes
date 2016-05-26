@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PShape;
+import processing.sound.*;
 
 class DashboardApplet extends PApplet {
 
@@ -26,7 +27,8 @@ class DashboardApplet extends PApplet {
   private PFont textFontBig;
   
   private WeatherMode weatherMode;
-
+  private SoundFile soundFile;
+  
   public DashboardApplet(String dataFolderPath) {
     super();
     images = new ArrayList<PImage>();
@@ -71,6 +73,11 @@ class DashboardApplet extends PApplet {
     this.textFontBig = loadFont(dataFolderPath + "VolvoBroad-46.vlw");
     
     modeActivationStarted = false;
+    
+      soundFile = new SoundFile(this, dataFolderPath + "airplaneding.mp3");
+    println("soundFile" + soundFile);
+    println("soundFile" + soundFile.frames() + "    " + soundFile.duration());
+  
   }
 
   private void drawBar(int x, int y, int sx, int sy, double percent) {
@@ -148,6 +155,9 @@ class DashboardApplet extends PApplet {
       this.timeToNextMode = timeToNextMode;
       this.nextWeatherMode = nextMode;
       this.modeActivationStarted = true;
+      if (soundFile != null) {
+        soundFile.play();
+      }
     }
   }
 
