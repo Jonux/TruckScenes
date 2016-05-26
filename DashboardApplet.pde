@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+  
 
+import processing.sound.*;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PShape;
@@ -25,7 +27,8 @@ class DashboardApplet extends PApplet {
   private PFont textFont;
 
   private WeatherMode weatherMode;
-
+  private SoundFile soundFile;
+  
   public DashboardApplet(String dataFolderPath) {
     super();
     images = new ArrayList<PImage>();
@@ -66,9 +69,19 @@ class DashboardApplet extends PApplet {
       }
     }
 
-    this.textFont = createFont("Arial Bold", 32);
+    System.out.println("loading font");
+    this.textFont = loadFont(dataFolderPath + "VolvoBroad-48.vlw"); //createFont("Arial Bold", 32);
+     System.out.println("Font " + textFont);
     textFont(textFont);
+   // System.err.println("Font set");
     modeActivationStarted = false;
+    
+    try {
+      soundFile = new SoundFile(this, dataFolderPath + "airplaneding.mp3");
+    } catch (Exception ex) {
+      System.err.println("Unable to load soundfile!");
+    }
+      
   }
 
   private void drawBar(int x, int y, int sx, int sy, double percent) {
@@ -98,7 +111,7 @@ class DashboardApplet extends PApplet {
     // Mode is changing
     if (isWeatherModeChanging()) {
       if (modeActivationTimer + timeToNextMode > millis()) {
-        textSize(30);
+        textSize(46);
         //if (activatingMsg[nextWeatherMode.value].length() > 22) {
         //  textSize(25);
         //} 
@@ -113,7 +126,7 @@ class DashboardApplet extends PApplet {
         // println(modeActivationTimer + " " + timeToNextMode + " " + millis() + " " + progress);
         drawBar(startxpos+padding+20, height - imgsize - padding*4 - barh - progBarH, between-(padding+20)*2, progBarH, progress);
         fill(0,0,0);
-        textSize(16);
+        textSize(24);
         text((int)(progress*100.0)+"%", startxpos + between*0.5, height - imgsize - padding*4 - barh - progBarH*0.3);
       } else {
         weatherMode = nextWeatherMode;
@@ -145,6 +158,7 @@ class DashboardApplet extends PApplet {
       this.timeToNextMode = timeToNextMode;
       this.nextWeatherMode = nextMode;
       this.modeActivationStarted = true;
+      //soundFile.play();
     }
   }
 

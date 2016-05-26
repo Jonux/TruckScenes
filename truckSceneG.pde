@@ -174,6 +174,12 @@ void updateBarSizes() {
   }
 }
 
+// Stop the application
+//void stop(){
+//  dashboard.stop();
+//  super.stop();
+//} 
+
 void draw() {
   boolean running = scenarios.get(scenarioIdx).draw();
 

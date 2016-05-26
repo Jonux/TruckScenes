@@ -99,6 +99,8 @@ public class VideoScenario implements Scenario {
     public boolean draw() {
         if (videoClip != null && videoClip.available()) {
             videoClip.read();
+        } else {
+           println("Video reading error" + videoClip); 
         }
         
         applet.background(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue());
