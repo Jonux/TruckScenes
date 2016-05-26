@@ -22,8 +22,9 @@ class DashboardApplet extends PApplet {
   private WeatherMode nextWeatherMode;
 
   private boolean modeActivationStarted;
-  private PFont textFont;
-
+  private PFont textFontSmall;
+  private PFont textFontBig;
+  
   private WeatherMode weatherMode;
 
   public DashboardApplet(String dataFolderPath) {
@@ -66,8 +67,9 @@ class DashboardApplet extends PApplet {
       }
     }
 
-    this.textFont = createFont("Arial Bold", 32);
-    textFont(textFont);
+    this.textFontSmall = loadFont( dataFolderPath + "VolvoBroad-24.vlw"); // createFont("Arial Bold", 32);
+    this.textFontBig = loadFont(dataFolderPath + "VolvoBroad-46.vlw");
+    
     modeActivationStarted = false;
   }
 
@@ -98,11 +100,11 @@ class DashboardApplet extends PApplet {
     // Mode is changing
     if (isWeatherModeChanging()) {
       if (modeActivationTimer + timeToNextMode > millis()) {
-        textSize(30);
+        //textSize(30);
         //if (activatingMsg[nextWeatherMode.value].length() > 22) {
         //  textSize(25);
         //} 
-        
+        textFont(textFontBig);
         textAlign(CENTER);
         fill(255, 255, 255);
 
@@ -113,7 +115,8 @@ class DashboardApplet extends PApplet {
         // println(modeActivationTimer + " " + timeToNextMode + " " + millis() + " " + progress);
         drawBar(startxpos+padding+20, height - imgsize - padding*4 - barh - progBarH, between-(padding+20)*2, progBarH, progress);
         fill(0,0,0);
-        textSize(16);
+        //textSize(16);
+        textFont(textFontSmall);
         text((int)(progress*100.0)+"%", startxpos + between*0.5, height - imgsize - padding*4 - barh - progBarH*0.3);
       } else {
         weatherMode = nextWeatherMode;
