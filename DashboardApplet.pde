@@ -105,8 +105,8 @@ class DashboardApplet extends PApplet {
     int progBarH = 32;
     
    
-    rect(startxpos, 10, 5,480);
-    rect(endxpos, 10, 5,480);
+    //rect(startxpos, 10, 5,480);
+    //rect(endxpos, 10, 5,480);
     // Mode is changing
     if (isWeatherModeChanging()) {
       if (modeActivationTimer + timeToNextMode > millis()) {
@@ -115,7 +115,7 @@ class DashboardApplet extends PApplet {
         
         textSize(30);
         if (activatingMsg[nextWeatherMode.value].length() > 22) {
-          textSize(24);
+          textSize(26);
         } 
         
         textAlign(CENTER);

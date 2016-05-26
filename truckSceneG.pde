@@ -22,6 +22,7 @@ int scenarioIdx;
 
 int scenarioTimer;
 int modeChangeDenied = 0;
+int reactionTimer;
 
 /*
  * Scenario setup
@@ -33,7 +34,7 @@ int modeChangeDenied = 0;
  */
 final SceneData[] scenes = {
   new SceneData(WeatherMode.UNKNOWN, dataFolderPath + "startView.png"), 
-  new SceneData(0.67f, -0.5f, 0.33f, -0.05f, WeatherMode.ECO, WeatherMode.SLIPPERY, 0.0f, 15.0f, 2000, 5000, 3000, videoFolderPath + "scene1.mp4"), 
+  new SceneData(0.67f, -0.5f, 0.33f, -0.05f, WeatherMode.ECO, WeatherMode.SLIPPERY, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene1.mp4"), 
   new SceneData(0.0f, 0.8f, 0.7f, 0.8f, WeatherMode.SLIPPERY, WeatherMode.ECO, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene2.mp4"), 
   new SceneData(0.6f, -0.3f, 0.4f, -0.08f, WeatherMode.ECO, WeatherMode.UPHILL, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene3.mp4"), 
   new SceneData(0.75f, -0.47f, 0.41f, -0.02f, WeatherMode.ECO, WeatherMode.WET, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene4.mp4"), 
@@ -52,8 +53,8 @@ enum QuestionStatus {
 }
 
 void settings() {
-  size(680, 1050, P2D);
-  //fullScreen(1);
+  size(1680, 1050, P2D);
+  fullScreen(1);
   println(dataPath(""));
 }
 
@@ -78,7 +79,7 @@ void setup() {
   } 
   catch (Exception e) {
     System.out.println("Error opening serial port: Port busy");
-    exit();
+    // exit();
   }
 
   // Setup dashboard display
@@ -130,6 +131,8 @@ void initNextScenario() {
   userCommand = UserCommand.UNKNOWN;
   println("Scene timer set: " + scenarioTimer);
 
+  reactionTimer = -1;
+  
   // Beginning of each scenario initialize the small screen's Weather mode
   dashboard.setWeatherMode(scenes[scenarioIdx].startWeatherMode);
   println("Dashboard weather " + dashboard.frameRate);
@@ -183,8 +186,9 @@ void draw() {
   if (scenes[scenarioIdx].sceneType == SceneType.VIDEO) {
 
     // shorter waiting time, when mode is manually selected
-    if (dashboard.getModeActivationTimer() > scenes[scenarioIdx].questionAfterTime && 
-      sceneAnswers.get(scenarioIdx) != QuestionStatus.UNKNOWN) {
+    if (reactionTimer != -1 && millis() - reactionTimer > scenes[scenarioIdx].questionAfterTime)
+    /*(dashboard.getModeActivationTimer() > scenes[scenarioIdx].questionAfterTime && 
+      sceneAnswers.get(scenarioIdx) != QuestionStatus.UNKNOWN) */ {
       initNextScenario();
 
       // start mode activation
@@ -271,17 +275,18 @@ int CalculateFEScore() {
 void transitionBetweenScenarios() {
 
   // Handle fade out from video scenarios
-  int fadeTime = 1000;
+  int fadeTime = 800;
   if (scenes[scenarioIdx].sceneType == SceneType.VIDEO) {
     boolean videoIsEnding = ((VideoScenario)scenarios.get(scenarioIdx)).videoTimeLeft() < fadeTime;
-    boolean userSelectionCompleted = dashboard.getModeActivationTimer() + fadeTime > scenes[scenarioIdx].questionAfterTime && sceneAnswers.get(scenarioIdx) != QuestionStatus.UNKNOWN;
+    boolean userSelectionCompleted = (reactionTimer != -1 && millis() - reactionTimer + fadeTime  > scenes[scenarioIdx].questionAfterTime); //dashboard.getModeActivationTimer() + fadeTime > scenes[scenarioIdx].questionAfterTime && sceneAnswers.get(scenarioIdx) != QuestionStatus.UNKNOWN;
 
     int v = 0;
     if (videoIsEnding || userSelectionCompleted) {
       if (videoIsEnding) {
         v = (int)(255 * ((float)fadeTime - ((VideoScenario)scenarios.get(scenarioIdx)).videoTimeLeft()) / fadeTime);
       } else {
-        v = 255 - (int)(255 * ((float)(scenes[scenarioIdx].questionAfterTime - dashboard.getModeActivationTimer()) / fadeTime));
+        v = 255 - (int)(255 * ((float)(scenes[scenarioIdx].questionAfterTime - (millis() - reactionTimer)) / fadeTime));
+        //  v = 255 - (int)(255 * ((float)(scenes[scenarioIdx].questionAfterTime - dashboard.getModeActivationTimer()) / fadeTime));
       }
       fill(0, 0, 0, v);
       rect(0, 0, width, height);
@@ -289,7 +294,7 @@ void transitionBetweenScenarios() {
   }
 
   // Handle fade in
-  int fadeInTime = 1000;
+  int fadeInTime = 1200;
   if (scenes[scenarioIdx].sceneType == SceneType.VIDEO) {
     int startT = scenarios.get(scenarioIdx).getStartTime();
     if (millis() - startT < fadeInTime) {
@@ -371,6 +376,7 @@ int handleUserEvent() {
       dashboard.completeWeatherModeSelection(true);
       modeChangeDenied = 0;
       sceneAnswers.set(scenarioIdx, QuestionStatus.APPROVED);
+      reactionTimer = millis();
       return 1;
     }
     break;
@@ -379,6 +385,7 @@ int handleUserEvent() {
       dashboard.completeWeatherModeSelection(false);
       modeChangeDenied = 1;
       sceneAnswers.set(scenarioIdx, QuestionStatus.DENIED);
+      reactionTimer = millis();
       return -1;
     }
     break;
