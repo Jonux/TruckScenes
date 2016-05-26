@@ -9,12 +9,12 @@ class DashboardApplet extends PApplet {
   final private int screenSizeX = 640;
   final private int screenSizeY = 480;
 
-  private ArrayList<PShape> images;
-  private ArrayList<PShape> inactiveImages;
+  private ArrayList<PImage> images;
+  private ArrayList<PImage> inactiveImages;
 
   private String dataFolderPath; // = "data/";
-  private String[] weatherFiles = {"eco_white.svg", "rain_white.svg", "hill_white.svg", "slippery_white.svg", "eco_white.svg"};
-  private String[] weatherFilesI = {"eco_grey.svg", "rain_gray.svg", "hill_gray.svg", "slippery_gray.svg", "eco_grey.svg"};
+  private String[] weatherFiles = {"icon_eco_active.png", "icon_rain_active.png", "icon_uphill_active.png", "icon_slippery_active.png", "icon_eco_active.png"};
+  private String[] weatherFilesI = {"icon_eco_inactive.png", "icon_rain_inactive.png", "icon_uphill_inactive.png", "icon_slippery_inactive.png", "icon_eco_inactive.png"};
   private String[] activatingMsg = {"ACTIVATING\nECO MODE", "ACTIVATING\nWET MODE", "ACTIVATING\nUPHILL MODE", "ACTIVATING\nSLIPPERY MODE", "DISABLING\nWEATHER MODE"};
 
   private int modeActivationTimer;
@@ -36,8 +36,8 @@ class DashboardApplet extends PApplet {
 
   public DashboardApplet(String dataFolderPath) {
     super();
-    images = new ArrayList<PShape>();
-    inactiveImages = new ArrayList<PShape>();
+    images = new ArrayList<PImage>();
+    inactiveImages = new ArrayList<PImage>();
     this.dataFolderPath = dataFolderPath; //"data\\";
     this.weatherMode = WeatherMode.UNKNOWN;
     this.nextWeatherMode = WeatherMode.UNKNOWN;
@@ -58,7 +58,7 @@ class DashboardApplet extends PApplet {
     for (String s : weatherFiles) {
       try {
         println(dataFolderPath + " " + s);
-        images.add(loadShape(dataFolderPath + "" + s));
+        images.add(loadImage(dataFolderPath + "" + s));
       } 
       catch (Exception e) {
         println("Unable to load image: " + s);
@@ -67,7 +67,7 @@ class DashboardApplet extends PApplet {
     // Load inactive weather icons
     for (String s : weatherFilesI) {
       try {
-        inactiveImages.add(loadShape(dataFolderPath + "" + s));
+        inactiveImages.add(loadImage(dataFolderPath + "" + s));
       } 
       catch (Exception e) {
         println("Unable to load image: " + s);
@@ -122,7 +122,7 @@ class DashboardApplet extends PApplet {
         fill(255, 255, 255);
 
         text(activatingMsg[nextWeatherMode.value], startxpos+(int)(between*0.3), (int)(this.height*0.3));
-        shape(images.get(nextWeatherMode.value), endxpos-(int)(between*0.4)-padding, (int)(this.height*0.1), (int)(between*0.4), (int)(between*0.4));
+        image(images.get(nextWeatherMode.value), endxpos-(int)(between*0.4)-padding, (int)(this.height*0.1), (int)(between*0.4), (int)(between*0.4));
 
         double progress = ((double)(millis() - modeActivationTimer)) / timeToNextMode;
         // println(modeActivationTimer + " " + timeToNextMode + " " + millis() + " " + progress);
@@ -136,11 +136,11 @@ class DashboardApplet extends PApplet {
 
     rect(0, this.height - imgsize - padding*2 - barh, (int)(this.width), barh);
     for (int i=0; i < weatherFiles.length-1; i++) {
-      int extraH = (i==2) ? (int)(imgsize*0.6) : 0;
+      //int extraH = (i==2) ? (int)(imgsize*0.6) : 0;
       if (weatherMode.value == i && weatherMode != WeatherMode.UNKNOWN) {
-        shape(images.get(i), startxpos + 20 + (imgsize+padding)*i, this.height - imgsize - padding - extraH, imgsize, imgsize);
+        image(images.get(i), startxpos + 20 + (imgsize+padding)*i, this.height - imgsize - padding, imgsize, imgsize);
       } else {
-        shape(inactiveImages.get(i), startxpos + 20 + (imgsize+padding)*i, this.height - imgsize - padding - extraH, imgsize, imgsize);
+        image(inactiveImages.get(i), startxpos + 20 + (imgsize+padding)*i, this.height - imgsize - padding, imgsize, imgsize);
       }
     }
 
