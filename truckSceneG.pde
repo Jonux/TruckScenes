@@ -52,7 +52,7 @@ enum QuestionStatus {
 }
 
 void settings() {
-  size(1680, 1050, P2D);
+  size(680, 1050, P2D);
   //fullScreen(1);
   println(dataPath(""));
 }
