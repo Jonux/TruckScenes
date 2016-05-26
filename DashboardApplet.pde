@@ -15,7 +15,7 @@ class DashboardApplet extends PApplet {
   private String dataFolderPath; // = "data/";
   private String[] weatherFiles = {"icon_eco_active.png", "icon_rain_active.png", "icon_uphill_active.png", "icon_slippery_active.png", "icon_eco_active.png"};
   private String[] weatherFilesI = {"icon_eco_inactive.png", "icon_rain_inactive.png", "icon_uphill_inactive.png", "icon_slippery_inactive.png", "icon_eco_inactive.png"};
-  private String[] activatingMsg = {"ACTIVATING\nECO MODE", "ACTIVATING\nWET MODE", "ACTIVATING\nUPHILL MODE", "ACTIVATING\nSLIPPERY MODE", "DISABLING\nWEATHER MODE"};
+  private String[] activatingMsg = {"ACTIVATING\nECO MODE", "ACTIVATING\nRAIN MODE", "ACTIVATING\nUPHILL MODE", "ACTIVATING\nSLIPPERY\nMODE", "DISABLING\nWEATHER MODE"};
 
   private int modeActivationTimer;
   private int timeToNextMode;
@@ -25,14 +25,6 @@ class DashboardApplet extends PApplet {
   private PFont textFont;
 
   private WeatherMode weatherMode;
-  //public enum WeatherMode {
-  //  ECO(0), SLIPPERY(1), UPHILL(2), WET(3), UNKNOWN(4);
-
-  //  private int value;
-  //    private WeatherMode(int value){
-  //        this.value = value;
-  //    }
-  //}
 
   public DashboardApplet(String dataFolderPath) {
     super();
@@ -89,44 +81,40 @@ class DashboardApplet extends PApplet {
 
   public void draw() {
     background(0);
-
-    // this.height = (int)(9.0 / 16.0 * (float)this.width);
-    // println(this.height);
-
+    
     int startxpos = 120; 
     int endxpos = width-startxpos;
     int between = width-2*startxpos;
-    // println("startxpos " + (width-2*startxpos));
-    
+
     int imgsize = 80;
     int padding = 15;
     int barh = 8;
     
     int progBarH = 32;
-    
+    final double aspectRatio = 550.0/500.0;
    
     //rect(startxpos, 10, 5,480);
     //rect(endxpos, 10, 5,480);
     // Mode is changing
     if (isWeatherModeChanging()) {
       if (modeActivationTimer + timeToNextMode > millis()) {
-        
-        //println( "Len: " + activatingMsg[nextWeatherMode.value].length() + " " + activatingMsg[nextWeatherMode.value]);
-        
         textSize(30);
-        if (activatingMsg[nextWeatherMode.value].length() > 22) {
-          textSize(26);
-        } 
+        //if (activatingMsg[nextWeatherMode.value].length() > 22) {
+        //  textSize(25);
+        //} 
         
         textAlign(CENTER);
         fill(255, 255, 255);
 
         text(activatingMsg[nextWeatherMode.value], startxpos+(int)(between*0.3), (int)(this.height*0.3));
-        image(images.get(nextWeatherMode.value), endxpos-(int)(between*0.4)-padding, (int)(this.height*0.1), (int)(between*0.4), (int)(between*0.4));
+        image(images.get(nextWeatherMode.value), endxpos-(int)(between*0.4)-padding, (int)(this.height*0.1), (int)(between*0.4), (int)(aspectRatio*between*0.4));
 
         double progress = ((double)(millis() - modeActivationTimer)) / timeToNextMode;
         // println(modeActivationTimer + " " + timeToNextMode + " " + millis() + " " + progress);
-        drawBar(startxpos+padding+20, height - imgsize - padding*3 - barh - progBarH, between-(padding+20)*2, progBarH, progress);
+        drawBar(startxpos+padding+20, height - imgsize - padding*4 - barh - progBarH, between-(padding+20)*2, progBarH, progress);
+        fill(0,0,0);
+        textSize(16);
+        text((int)(progress*100.0)+"%", startxpos + between*0.5, height - imgsize - padding*4 - barh - progBarH*0.3);
       } else {
         weatherMode = nextWeatherMode;
       }
@@ -136,15 +124,12 @@ class DashboardApplet extends PApplet {
 
     rect(0, this.height - imgsize - padding*2 - barh, (int)(this.width), barh);
     for (int i=0; i < weatherFiles.length-1; i++) {
-      //int extraH = (i==2) ? (int)(imgsize*0.6) : 0;
       if (weatherMode.value == i && weatherMode != WeatherMode.UNKNOWN) {
-        image(images.get(i), startxpos + 20 + (imgsize+padding)*i, this.height - imgsize - padding, imgsize, imgsize);
+        image(images.get(i), startxpos + 20 + (imgsize+padding)*i, this.height - imgsize - padding, imgsize, (int)(aspectRatio*imgsize));
       } else {
-        image(inactiveImages.get(i), startxpos + 20 + (imgsize+padding)*i, this.height - imgsize - padding, imgsize, imgsize);
+        image(inactiveImages.get(i), startxpos + 20 + (imgsize+padding)*i, this.height - imgsize - padding, imgsize, (int)(aspectRatio*imgsize));
       }
     }
-
-    //redraw();
   }
 
   /*

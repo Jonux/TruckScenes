@@ -34,10 +34,10 @@ int reactionTimer;
  */
 final SceneData[] scenes = {
   new SceneData(WeatherMode.UNKNOWN, dataFolderPath + "startView.png"), 
-  new SceneData(0.67f, -0.5f, 0.33f, -0.05f, WeatherMode.ECO, WeatherMode.SLIPPERY, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene1.mp4"), 
-  new SceneData(0.0f, 0.8f, 0.7f, 0.8f, WeatherMode.SLIPPERY, WeatherMode.ECO, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene2.mp4"), 
-  new SceneData(0.6f, -0.3f, 0.4f, -0.08f, WeatherMode.ECO, WeatherMode.UPHILL, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene3.mp4"), 
-  new SceneData(0.75f, -0.47f, 0.41f, -0.02f, WeatherMode.ECO, WeatherMode.WET, 0.0f, 15.0f, 2000, 8000, 5000, videoFolderPath + "scene4.mp4"), 
+  new SceneData(0.67f, -0.5f, 0.33f, -0.05f, WeatherMode.ECO, WeatherMode.SLIPPERY, 0.0f, 15.0f, 2000, 8000, 3500, videoFolderPath + "scene1.mp4"), 
+  new SceneData(0.0f, 0.8f, 0.7f, 0.8f, WeatherMode.SLIPPERY, WeatherMode.ECO, 0.0f, 15.0f, 2000, 8000, 3500, videoFolderPath + "scene2.mp4"), 
+  new SceneData(0.6f, -0.3f, 0.4f, -0.08f, WeatherMode.ECO, WeatherMode.UPHILL, 0.0f, 15.0f, 2000, 8000, 3500, videoFolderPath + "scene3.mp4"), 
+  new SceneData(0.75f, -0.47f, 0.41f, -0.02f, WeatherMode.ECO, WeatherMode.WET, 0.0f, 15.0f, 2000, 8000, 3500, videoFolderPath + "scene4.mp4"), 
   new SceneData(WeatherMode.UNKNOWN, dataFolderPath + "summaryView.png")
 };
 
@@ -226,14 +226,6 @@ void draw() {
         shape(starShapeHollow, 770+i*80, 540, starSize, starSize);
       }
     }
-   /*
-    // Set text on top of bubbles
-    textSize(46);
-    textAlign(CENTER);
-    fill(0);
-    text(String.format("%c%.1f%%", (safetyOverallChange >= 0) ? '+' : '-', safetyOverallChange), 1170, 640);
-    text(String.format("%c%.1f%%", (fuelOverallChange >= 0) ? '+' : '-', fuelOverallChange * 10), 760, 640);
-    */
   }
 
   // Handle user inputs and update bar sizes
@@ -263,6 +255,7 @@ int CalculateSafetyScore() {
  return max(scoreSafety,0);
 }
 
+// Fuel efficiency score
 int CalculateFEScore() {
  int scoreFE = 4;
  QuestionStatus q = (2 < sceneAnswers.size()) ? sceneAnswers.get(2) : QuestionStatus.UNKNOWN;
@@ -288,7 +281,8 @@ void transitionBetweenScenarios() {
         v = 255 - (int)(255 * ((float)(scenes[scenarioIdx].questionAfterTime - (millis() - reactionTimer)) / fadeTime));
         //  v = 255 - (int)(255 * ((float)(scenes[scenarioIdx].questionAfterTime - dashboard.getModeActivationTimer()) / fadeTime));
       }
-      fill(0, 0, 0, v);
+      
+      fill(0, 0, 0, min(max(v,0), 255));
       rect(0, 0, width, height);
     }
   }
