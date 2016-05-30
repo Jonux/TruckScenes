@@ -234,9 +234,9 @@ void draw() {
   // Handle fading events
   transitionBetweenScenarios();
   
-  fill(255);
-  textSize(16);
-  text("FPS: " + (int)frameRate, 20, 30);
+  //fill(255);
+  //textSize(16);
+  //text("FPS: " + (int)frameRate, 20, 30);
 }
 
 int CalculateSafetyScore() {
